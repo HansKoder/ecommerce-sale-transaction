@@ -1,0 +1,15 @@
+services:
+  
+  liquibase:
+    container_name: liquibase
+    image: liquibase/liquibase
+    command: update --changelog-file=changelog.xml --username=user --password=pass --url=jdbc:postgresql://db:5432/ecommerce_sale_db
+    volumes:
+      - ./config/changelog.xml:/liquibase/changelog.xml
+      - ./scripts:/liquibase/scripts
+    networks:
+      - backend-net
+
+networks:
+  backend-net: 
+    external: true

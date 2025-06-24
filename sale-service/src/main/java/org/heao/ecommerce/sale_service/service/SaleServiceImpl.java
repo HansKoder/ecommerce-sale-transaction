@@ -1,0 +1,78 @@
+package org.heao.ecommerce.sale_service.service;
+
+import org.heao.ecommerce.sale_service.dto.request.CreateSaleRequest;
+import org.heao.ecommerce.sale_service.dto.request.DetailSaleDTO;
+import org.heao.ecommerce.sale_service.dto.response.SaleWasCreatedResponse;
+import org.heao.ecommerce.sale_service.entity.DetailSale;
+import org.heao.ecommerce.sale_service.entity.Product;
+import org.heao.ecommerce.sale_service.entity.Sale;
+import org.heao.ecommerce.sale_service.entity.Stock;
+import org.heao.ecommerce.sale_service.exception.ItemsIsEmptyException;
+import org.heao.ecommerce.sale_service.exception.ProductNotFoundException;
+import org.heao.ecommerce.sale_service.repository.DetailSaleRepository;
+import org.heao.ecommerce.sale_service.repository.ProductRepository;
+import org.heao.ecommerce.sale_service.repository.SaleRepository;
+import org.heao.ecommerce.sale_service.repository.StockRepository;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.Optional;
+
+@Service
+public class SaleServiceImpl implements SaleService {
+
+    private final ProductRepository productRepository;
+    private final StockRepository stockRepository;
+    private final SaleRepository saleRepository;
+    private final DetailSaleRepository  detailSaleRepository;
+
+    public SaleServiceImpl(ProductRepository productRepository, StockRepository stockRepository, SaleRepository saleRepository, DetailSaleRepository detailSaleRepository) {
+        this.productRepository = productRepository;
+        this.stockRepository = stockRepository;
+        this.saleRepository = saleRepository;
+        this.detailSaleRepository = detailSaleRepository;
+    }
+
+    @Override
+    public SaleWasCreatedResponse createSale(CreateSaleRequest request) {
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        if (request.items().isEmpty())
+            throw new ItemsIsEmptyException("Must have almost an item");
+
+        Sale saleEntity = new Sale();
+        saleEntity.customer = request.customer();
+        saleEntity.total = total;
+        saleRepository.save(saleEntity);
+
+        for (DetailSaleDTO detail : request.items()) {
+            Long productId = detail.product().productId();
+            Optional<Product> optionalProduct = productRepository.findById(productId);
+            if (optionalProduct.isEmpty())
+                throw new ProductNotFoundException("Product " + productId + " not found in the DB");
+
+            BigDecimal subTotal = detail.product().price()
+                    .multiply(BigDecimal.valueOf(detail.quantity()));
+
+            DetailSale detailSaleEntity = new DetailSale();
+            detailSaleEntity.sale = saleEntity;
+            detailSaleEntity.quantity = detail.quantity();
+            detailSaleEntity.subtotal = subTotal;
+            detailSaleRepository.save(detailSaleEntity);
+
+            Product product = optionalProduct.get();
+            Stock stock = new Stock();
+            stock.product = product;
+            stock.quantity = detail.quantity();
+            stockRepository.save(stock);
+
+            total = total.add(subTotal);
+        }
+
+        saleEntity.total = total;
+        saleRepository.save(saleEntity);
+
+        return new SaleWasCreatedResponse(saleEntity.id, "Sale was crated with Successfully");
+    }
+}
