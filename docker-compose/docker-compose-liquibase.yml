@@ -1,14 +1,4 @@
 services:
-  
-  liquibase-sale:
-    container_name: liquibase-sale
-    image: liquibase/liquibase
-    command: update --changelog-file=changelog.xml --username=user --password=pass --url=jdbc:postgresql://sale-db:5432/sale
-    volumes:
-      - ./sale/changelog.xml:/liquibase/changelog.xml
-      - ./sale/scripts:/liquibase/scripts
-    networks:
-      - backend-net
 
   liquibase-product:
     container_name: liquibase-product
@@ -19,6 +9,28 @@ services:
       - ./product/scripts:/liquibase/scripts
     networks:
       - backend-net
+  
+  liquibase-stock:
+    container_name: liquibase-stock
+    image: liquibase/liquibase
+    command: update --changelog-file=changelog.xml --username=user --password=pass --url=jdbc:postgresql://stock-db:5432/stock
+    volumes:
+      - ./stock/changelog.xml:/liquibase/changelog.xml
+      - ./stock/scripts:/liquibase/scripts
+    networks:
+      - backend-net
+
+  liquibase-sale:
+    container_name: liquibase-sale
+    image: liquibase/liquibase
+    command: update --changelog-file=changelog.xml --username=user --password=pass --url=jdbc:postgresql://sale-db:5432/sale
+    volumes:
+      - ./sale/changelog.xml:/liquibase/changelog.xml
+      - ./sale/scripts:/liquibase/scripts
+    networks:
+      - backend-net
+
+
 
 networks:
   backend-net: 

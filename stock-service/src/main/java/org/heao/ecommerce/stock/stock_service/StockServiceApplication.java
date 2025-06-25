@@ -1,4 +1,4 @@
-package org.heao.ecommerce.stock_service;
+package org.heao.ecommerce.stock.stock_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

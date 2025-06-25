@@ -1,4 +1,4 @@
-package org.heao.ecommerce.stock_service;
+package org.heao.ecommerce.stock.stock_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
