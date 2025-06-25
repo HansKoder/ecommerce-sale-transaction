@@ -1,5 +1,6 @@
 package org.heao.ecommerce.sale_service.service;
 
+import jakarta.transaction.Transactional;
 import org.heao.ecommerce.sale_service.dto.request.CreateSaleRequest;
 import org.heao.ecommerce.sale_service.dto.request.DetailSaleDTO;
 import org.heao.ecommerce.sale_service.dto.response.SaleWasCreatedResponse;
@@ -67,6 +68,7 @@ public class SaleServiceImpl implements SaleService {
         return detailSaleRepository.save(detailSaleEntity);
     }
 
+    @Transactional
     @Override
     public SaleWasCreatedResponse createSale(CreateSaleRequest request) {
         BigDecimal total = BigDecimal.ZERO;
