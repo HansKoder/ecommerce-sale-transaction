@@ -54,7 +54,7 @@ public class SaleServiceImpl implements SaleService {
         stockRepository.save(stock);
     }
 
-    private DetailSale addDetailSale (DetailSaleDTO detail, Sale saleEntity) {
+    private DetailSale addDetailSale (DetailSaleDTO detail, Sale saleEntity, Product product) {
         if (detail.product().price().intValue() < 1)
             throw new ProductPriceMustBePositiveException();
 
@@ -63,6 +63,7 @@ public class SaleServiceImpl implements SaleService {
 
         DetailSale detailSaleEntity = new DetailSale();
         detailSaleEntity.sale = saleEntity;
+        detailSaleEntity.product = product;
         detailSaleEntity.quantity = detail.quantity();
         detailSaleEntity.subtotal = subTotal;
         return detailSaleRepository.save(detailSaleEntity);
@@ -84,7 +85,7 @@ public class SaleServiceImpl implements SaleService {
         for (DetailSaleDTO detail : request.items()) {
             Product product = getProductById(detail.product().productId());
             updateStock(product, detail.quantity());
-            DetailSale detailSale = addDetailSale(detail, saleEntity);
+            DetailSale detailSale = addDetailSale(detail, saleEntity, product);
             total = total.add(detailSale.subtotal);
         }
 
