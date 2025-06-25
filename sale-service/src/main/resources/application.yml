@@ -1,5 +1,5 @@
 server:
-  port: 9081
+  port: 9082
 
 spring:
   application:
@@ -15,7 +15,7 @@ spring:
         format_sql: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/sale
+    url: jdbc:postgresql://localhost:5434/sale
     username: user
     password: pass
     driver-class-name: org.postgresql.Driver

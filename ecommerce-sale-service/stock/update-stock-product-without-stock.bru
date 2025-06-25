@@ -1,0 +1,19 @@
+meta {
+  name: update-stock-product-without-stock
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{host-stock-service}}/api/v1/stocks/subtract-stock
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "productId": 100,
+    "quantity": 20
+  }
+  
+}

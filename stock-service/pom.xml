@@ -8,7 +8,7 @@
 		<version>3.3.13</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>org.heao.ecommerce</groupId>
+	<groupId>org.heao.ecommerce.stock</groupId>
 	<artifactId>stock-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>stock-service</name>
