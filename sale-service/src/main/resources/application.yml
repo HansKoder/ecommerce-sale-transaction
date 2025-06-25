@@ -21,3 +21,13 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-init-sql: SET TIME ZONE 'UTC'
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE

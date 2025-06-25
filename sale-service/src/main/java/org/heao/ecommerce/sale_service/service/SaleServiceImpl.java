@@ -1,5 +1,6 @@
 package org.heao.ecommerce.sale_service.service;
 
+import jakarta.transaction.Transactional;
 import org.heao.ecommerce.sale_service.dto.request.CreateSaleRequest;
 import org.heao.ecommerce.sale_service.dto.request.DetailSaleDTO;
 import org.heao.ecommerce.sale_service.dto.response.SaleWasCreatedResponse;
@@ -53,7 +54,7 @@ public class SaleServiceImpl implements SaleService {
         stockRepository.save(stock);
     }
 
-    private DetailSale addDetailSale (DetailSaleDTO detail, Sale saleEntity) {
+    private DetailSale addDetailSale (DetailSaleDTO detail, Sale saleEntity, Product product) {
         if (detail.product().price().intValue() < 1)
             throw new ProductPriceMustBePositiveException();
 
@@ -62,11 +63,13 @@ public class SaleServiceImpl implements SaleService {
 
         DetailSale detailSaleEntity = new DetailSale();
         detailSaleEntity.sale = saleEntity;
+        detailSaleEntity.product = product;
         detailSaleEntity.quantity = detail.quantity();
         detailSaleEntity.subtotal = subTotal;
         return detailSaleRepository.save(detailSaleEntity);
     }
 
+    @Transactional
     @Override
     public SaleWasCreatedResponse createSale(CreateSaleRequest request) {
         BigDecimal total = BigDecimal.ZERO;
@@ -82,7 +85,7 @@ public class SaleServiceImpl implements SaleService {
         for (DetailSaleDTO detail : request.items()) {
             Product product = getProductById(detail.product().productId());
             updateStock(product, detail.quantity());
-            DetailSale detailSale = addDetailSale(detail, saleEntity);
+            DetailSale detailSale = addDetailSale(detail, saleEntity, product);
             total = total.add(detailSale.subtotal);
         }
 
