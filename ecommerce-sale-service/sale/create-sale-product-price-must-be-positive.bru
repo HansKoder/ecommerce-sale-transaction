@@ -1,7 +1,7 @@
 meta {
-  name: create-sale-product-quantity-must-be-positive
+  name: create-sale-product-price-must-be-positive
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
@@ -17,9 +17,9 @@ body:json {
       {
         "product": {
           "productId": 1,
-          "price": 100
+          "price": -100
         },
-        "quantity": -1
+        "quantity": 1
       }
     ]
   }

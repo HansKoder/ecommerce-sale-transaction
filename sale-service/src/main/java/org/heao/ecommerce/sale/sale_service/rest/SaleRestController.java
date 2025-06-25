@@ -1,7 +1,7 @@
 package org.heao.ecommerce.sale.sale_service.rest;
 
 import org.heao.ecommerce.sale.sale_service.dto.request.CreateSaleRequest;
-import org.heao.ecommerce.sale.sale_service.dto.response.SaleWasCreatedResponse;
+import org.heao.ecommerce.sale.sale_service.dto.response.CreateSaleResponse;
 import org.heao.ecommerce.sale.sale_service.service.SaleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ public class SaleRestController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<SaleWasCreatedResponse> createSale (@RequestBody CreateSaleRequest request) {
+    public ResponseEntity<CreateSaleResponse> createSale (@RequestBody CreateSaleRequest request) {
         return ResponseEntity.ok(saleService.createSale(request));
     }
 

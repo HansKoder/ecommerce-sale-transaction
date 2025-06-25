@@ -16,7 +16,7 @@ public class ProductRestController {
         this.productService = productService;
     }
 
-    @PostMapping("/{productId}")
+    @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductById (@PathVariable("productId") Long productId) {
         return ResponseEntity.ok(ProductMapper.toDto(productService.getProductById(productId)));
     }

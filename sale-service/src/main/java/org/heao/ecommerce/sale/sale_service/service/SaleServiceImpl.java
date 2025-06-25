@@ -3,7 +3,8 @@ package org.heao.ecommerce.sale.sale_service.service;
 import jakarta.transaction.Transactional;
 import org.heao.ecommerce.sale.sale_service.dto.request.CreateSaleRequest;
 import org.heao.ecommerce.sale.sale_service.dto.request.DetailSaleDTO;
-import org.heao.ecommerce.sale.sale_service.dto.response.SaleWasCreatedResponse;
+import org.heao.ecommerce.sale.sale_service.dto.response.CreateSaleResponse;
+import org.heao.ecommerce.sale.sale_service.dto.response.ProductResponse;
 import org.heao.ecommerce.sale.sale_service.entity.DetailSale;
 import org.heao.ecommerce.sale.sale_service.entity.Product;
 import org.heao.ecommerce.sale.sale_service.entity.Sale;
@@ -12,6 +13,8 @@ import org.heao.ecommerce.sale.sale_service.exception.ItemsIsEmptyException;
 import org.heao.ecommerce.sale.sale_service.exception.ProductNotFoundException;
 import org.heao.ecommerce.sale.sale_service.exception.ProductPriceMustBePositiveException;
 import org.heao.ecommerce.sale.sale_service.exception.StockQuantityInvalidException;
+import org.heao.ecommerce.sale.sale_service.mapper.ProductMapper;
+import org.heao.ecommerce.sale.sale_service.product.ProductClient;
 import org.heao.ecommerce.sale.sale_service.repository.DetailSaleRepository;
 import org.heao.ecommerce.sale.sale_service.repository.ProductRepository;
 import org.heao.ecommerce.sale.sale_service.repository.SaleRepository;
@@ -28,12 +31,19 @@ public class SaleServiceImpl implements SaleService {
     private final StockRepository stockRepository;
     private final SaleRepository saleRepository;
     private final DetailSaleRepository  detailSaleRepository;
+    private final ProductClient productClient;
 
-    public SaleServiceImpl(ProductRepository productRepository, StockRepository stockRepository, SaleRepository saleRepository, DetailSaleRepository detailSaleRepository) {
+    public SaleServiceImpl(
+            ProductRepository productRepository,
+            StockRepository stockRepository,
+            SaleRepository saleRepository,
+            DetailSaleRepository detailSaleRepository,
+            ProductClient productClient) {
         this.productRepository = productRepository;
         this.stockRepository = stockRepository;
         this.saleRepository = saleRepository;
         this.detailSaleRepository = detailSaleRepository;
+        this.productClient = productClient;
     }
 
     private Product getProductById (Long productId) {
@@ -42,6 +52,10 @@ public class SaleServiceImpl implements SaleService {
             throw new ProductNotFoundException("Product " + productId + " not found in the DB");
 
         return optionalProduct.get();
+    }
+
+    private Product getProductByIdClient (Long productId) {
+        return ProductMapper.toEntity(productClient.getProductById(productId));
     }
 
     private void updateStock (Product product, int quantity) {
@@ -71,7 +85,7 @@ public class SaleServiceImpl implements SaleService {
 
     @Transactional
     @Override
-    public SaleWasCreatedResponse createSale(CreateSaleRequest request) {
+    public CreateSaleResponse createSale(CreateSaleRequest request) {
         BigDecimal total = BigDecimal.ZERO;
 
         if (request.items().isEmpty())
@@ -83,7 +97,7 @@ public class SaleServiceImpl implements SaleService {
         saleRepository.save(saleEntity);
 
         for (DetailSaleDTO detail : request.items()) {
-            Product product = getProductById(detail.product().productId());
+            Product product = getProductByIdClient(detail.product().productId());
             updateStock(product, detail.quantity());
             DetailSale detailSale = addDetailSale(detail, saleEntity, product);
             total = total.add(detailSale.subtotal);
@@ -92,6 +106,6 @@ public class SaleServiceImpl implements SaleService {
         saleEntity.total = total;
         saleRepository.save(saleEntity);
 
-        return new SaleWasCreatedResponse(saleEntity.id, "Sale was crated with Successfully");
+        return new CreateSaleResponse(saleEntity.id, "Sale was crated with Successfully");
     }
 }

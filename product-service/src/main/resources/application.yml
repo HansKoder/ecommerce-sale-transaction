@@ -15,7 +15,7 @@ spring:
         format_sql: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecommerce_sale_db
+    url: jdbc:postgresql://localhost:5432/product
     username: user
     password: pass
     driver-class-name: org.postgresql.Driver

@@ -1,8 +1,8 @@
 package org.heao.ecommerce.sale.sale_service.service;
 
 import org.heao.ecommerce.sale.sale_service.dto.request.CreateSaleRequest;
-import org.heao.ecommerce.sale.sale_service.dto.response.SaleWasCreatedResponse;
+import org.heao.ecommerce.sale.sale_service.dto.response.CreateSaleResponse;
 
 public interface SaleService {
-    SaleWasCreatedResponse createSale (CreateSaleRequest request);
+    CreateSaleResponse createSale (CreateSaleRequest request);
 }
