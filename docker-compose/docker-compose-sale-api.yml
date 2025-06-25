@@ -1,15 +1,32 @@
 services:
   
-  app:
+  sale-service:
     build:
       context: ../sale-service
       dockerfile: Dockerfile
-    container_name: ecommerce-sale-service
+    container_name: sale-service
     depends_on:
-      db:
+      sale-db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ecommerce_sale_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sale-db:5432/sale
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: pass
+    ports:
+      - "8081:8081"
+    networks:
+      - backend-net
+
+  product-service:
+    build:
+      context: ../product-service
+      dockerfile: Dockerfile
+    container_name: ecommerce-product-service
+    depends_on:
+      product-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-db:5432/product
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: pass
     ports:

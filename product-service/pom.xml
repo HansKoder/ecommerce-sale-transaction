@@ -8,10 +8,10 @@
 		<version>3.3.13</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>org.heao.ecommerce.sale</groupId>
-	<artifactId>sale-service</artifactId>
+	<groupId>org.heao.ecommerce.product</groupId>
+	<artifactId>product-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>sale-service</name>
+	<name>product-service</name>
 	<description>Side project to learn about transactions using spring boot </description>
 	<url/>
 	<licenses>
