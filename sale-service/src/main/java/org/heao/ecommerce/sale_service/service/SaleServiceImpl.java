@@ -17,7 +17,6 @@ import org.heao.ecommerce.sale_service.repository.SaleRepository;
 import org.heao.ecommerce.sale_service.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -46,7 +45,7 @@ public class SaleServiceImpl implements SaleService {
 
     private void updateStock (Product product, int quantity) {
         if (quantity < 1)
-            throw new StockQuantityInvalidException("Quantity Must be greater to zero");
+            throw new StockQuantityInvalidException("Quantity Must be positive");
 
         Stock stock = new Stock();
         stock.product = product;
@@ -83,9 +82,8 @@ public class SaleServiceImpl implements SaleService {
         for (DetailSaleDTO detail : request.items()) {
             Product product = getProductById(detail.product().productId());
             updateStock(product, detail.quantity());
-            BigDecimal subTotal = addDetailSale(detail, saleEntity).subtotal;
-            
-            total = total.add(subTotal);
+            DetailSale detailSale = addDetailSale(detail, saleEntity);
+            total = total.add(detailSale.subtotal);
         }
 
         saleEntity.total = total;
