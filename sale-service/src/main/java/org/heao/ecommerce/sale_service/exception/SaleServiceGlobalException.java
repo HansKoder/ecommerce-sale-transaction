@@ -19,4 +19,17 @@ public class SaleServiceGlobalException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorAPI(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
+
+    @ExceptionHandler(StockQuantityInvalidException.class)
+    public ResponseEntity<ErrorAPI> stockQuantityInvalid (StockQuantityInvalidException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorAPI(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProductPriceMustBePositiveException.class)
+    public ResponseEntity<ErrorAPI> productPriceMustBePositive (ProductPriceMustBePositiveException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorAPI(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
+    }
+
 }
